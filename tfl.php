@@ -12,8 +12,8 @@ if ($_SERVER['REMOTE_ADDR'] == '86.164.45.207') {
 }
 
 /*
-  6. eztfl credents for mysql
-  7. https access to it too
+  TODO
+  1. Handle when smscode doesn't have a naptan code
 */
 
 /* -- Rate limiting -- */
@@ -83,6 +83,8 @@ $RECENTS_TITLE = 'Recents:';
 $CLEAR_RECENTS_VERB = 'clear_recents';
 $CLEAR_RECENTS_TEXT = 'clear recents';
 $STOPNO_VERB = 'stopno';
+$RELOAD_NAME = 'reload';
+$RELOAD_TEXT = 'Reload ';
 
 $ERR_NO_ERROR = 0;
 $ERR_TFL_NOSVC = 1;
@@ -247,8 +249,15 @@ if ($cookie_good === true) {
 $recent_code = '';
 $iframe_target = '';        // no opinion on what to show
 if (isset($_GET[$STOPNO_VERB])) {
-	if (preg_match('/^\d{' . $LEN_BUS_CODE . '}$/', $_GET[$STOPNO_VERB]) === 1) {
-		$recent_code = intval($_GET[$STOPNO_VERB]);
+	if (isset($_GET[$RELOAD_NAME])) {
+		$recent_code = intval(substr($_GET[$RELOAD_NAME],
+									 strlen($RELOAD_TEXT),
+									 $LEN_BUS_CODE));
+
+	} else {
+		if (preg_match('/^\d{' . $LEN_BUS_CODE . '}$/', $_GET[$STOPNO_VERB]) === 1) {
+			$recent_code = intval($_GET[$STOPNO_VERB]);
+		}
 	}
 	header('Location: ' . $SERVER_DETS .
 		   substr($URI, 0, strlen($INTENDED_SUBDIR)) . $recent_code);
@@ -414,7 +423,8 @@ if ($iframe_target === false && ($clear_faves !== false || $fave_code !== '')) {
 echo '
 <form action="' . $INTENDED_SERVER_DETS . $INTENDED_SUBDIR . '" method="get">
 Stop No.: <input type="text" name="' . $STOPNO_VERB . '"><br>
-<input type="submit" value="*Go!*"><input type="reset" value="Clear stop no."><br>
+<input type="submit" value="*Go!*"><input type="reset" value="Clear stop no.">
+<input type="submit" name="' . $RELOAD_NAME . '" value="' . $RELOAD_TEXT . $recent_code . '"><br>
 </form>';
 echo '[ ';
 if ($show_star === 'nolink' || $show_star === 'link in faves') {
