@@ -1,9 +1,9 @@
 <?php
 
-define('SERVER_NAME_AND_PORT', 
-	   $_SERVER['SERVER_NAME'] . ':' 
+define('SERVER_NAME_AND_PORT',
+	   $_SERVER['SERVER_NAME'] . ':'
 	   . $_SERVER['SERVER_PORT']);
-define('SERVER_DETS', (@$_SERVER['HTTPS'] == 'on') 
+define('SERVER_DETS', (@$_SERVER['HTTPS'] == 'on')
 	   ? 'https://' . SERVER_NAME_AND_PORT
 	   : 'http://' . SERVER_NAME_AND_PORT);
 
@@ -31,8 +31,8 @@ define('LEN_BUS_CODE', 5);
 define('COUNTDOWN_URL', 'http://m.countdown.tfl.gov.uk/arrivals/');
 
 define('VIEWPORT_WIDTH', 360);
-define('STAR_BLACK', '&#9733);');
-define('STAR_WHITE', '&#9734);');
+define('STAR_BLACK', '&#9733');
+define('STAR_WHITE', '&#9734');
 define('DIVIDER', ' |');
 
 define('PERSISTENT_COOKIE_NAME', 'eztfl');
