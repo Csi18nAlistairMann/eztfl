@@ -186,21 +186,21 @@ if ($cookie_good === true) {
 // If we see the GET from form submission, issue an immediate reload
 // to the RESTful link I want browsers to see
 //
-$recent_code = '';
+$sms_code = '';
 $iframe_target = '';        // no opinion on what to show
 if (isset($_GET[STOPNO_VERB])) {
 	if (isset($_GET[RELOAD_NAME])) {
-		$recent_code = intval(substr($_GET[RELOAD_NAME],
+		$sms_code = intval(substr($_GET[RELOAD_NAME],
 									 strlen(RELOAD_TEXT),
 									 LEN_BUS_CODE));
 
 	} else {
 		if (preg_match('/^\d{' . LEN_BUS_CODE . '}$/', $_GET[STOPNO_VERB]) === 1) {
-			$recent_code = intval($_GET[STOPNO_VERB]);
+			$sms_code = intval($_GET[STOPNO_VERB]);
 		}
 	}
 	header('Location: ' . SERVER_DETS .
-		   substr(URI, 0, strlen(INTENDED_SUBDIR)) . $recent_code);
+		   substr(URI, 0, strlen(INTENDED_SUBDIR)) . $sms_code);
 	exit;
 
 	// Otherwise if we see the RESTful request, extract the bus stop code
@@ -211,7 +211,7 @@ if (isset($_GET[STOPNO_VERB])) {
 		$iframe_target = false;
 	}    // specifically do not show
 	if (preg_match('#^' . INTENDED_SUBDIR . '\d\d\d\d\d.*$#', URI) === 1) {
-		$recent_code =
+		$sms_code =
 			intval(substr(URI, strlen(INTENDED_SUBDIR), LEN_BUS_CODE));
 	}
 }
@@ -223,10 +223,10 @@ if (isset($_GET[STOPNO_VERB])) {
 // we DO have
 //
 $recent_links = '';
-if ($recent_code !== '') {
+if ($sms_code !== '') {
 	$found = false;
 	for ($a = 0; $a < $pers_cookie[SETTINGS_NAME][NUM_RECENTS_NAME]; $a++) {
-		if ($pers_cookie[RECENTS_NAME][$a] === $recent_code) {
+		if ($pers_cookie[RECENTS_NAME][$a] === $sms_code) {
 			$found = true;
 		}
 	}
@@ -236,7 +236,7 @@ if ($recent_code !== '') {
 			$pers_cookie[RECENTS_NAME][$a] =
 				$pers_cookie[RECENTS_NAME][$a - 1];
 		}
-		$pers_cookie[RECENTS_NAME][0] = $recent_code;
+		$pers_cookie[RECENTS_NAME][0] = $sms_code;
 	}
 }
 
@@ -289,7 +289,7 @@ for ($a = 0; $a < $pers_cookie[SETTINGS_NAME][NUM_FAVES_NAME]; $a++) {
 			' <a href="' . INTENDED_SERVER_DETS . INTENDED_SUBDIR .
 			$pers_cookie[FAVES_NAME][$a] . '">' .
 			$pers_cookie[FAVES_NAME][$a] . '</a>' . DIVIDER;
-		if ($pers_cookie[FAVES_NAME][$a] == $recent_code) {
+		if ($pers_cookie[FAVES_NAME][$a] == $sms_code) {
 			$fave_star_html = STAR_BLACK;
 		}
 	}
@@ -309,9 +309,9 @@ if ($faves_links !== '') {
 /* -- Assess what form the star before faves will take -- */
 
 $code_in_faves_found = false;
-if ($recent_code !== '') {
+if ($sms_code !== '') {
 	for ($a = 0; $a < $pers_cookie[SETTINGS_NAME][NUM_FAVES_NAME]; $a++) {
-		if ($pers_cookie[FAVES_NAME][$a] === $recent_code) {
+		if ($pers_cookie[FAVES_NAME][$a] === $sms_code) {
 			$code_in_faves_found = true;
 		}
 	}
@@ -324,7 +324,7 @@ if ($fave_code !== '') {
 	}
 }
 
-if ($recent_code === '' && $fave_code === '') {
+if ($sms_code === '' && $fave_code === '') {
 	$show_star = 'nolink';
 	$fave_star_html = STAR_WHITE;
 
@@ -364,7 +364,7 @@ echo '
 <form action="' . INTENDED_SERVER_DETS . INTENDED_SUBDIR . '" method="get">
 Stop No.: <input type="text" name="' . STOPNO_VERB . '"><br>
 <input type="submit" value="*Go!*"><input type="reset" value="Clear stop no.">
-<input type="submit" name="' . RELOAD_NAME . '" value="' . RELOAD_TEXT . $recent_code . '"><br>
+<input type="submit" name="' . RELOAD_NAME . '" value="' . RELOAD_TEXT . $sms_code . '"><br>
 </form>';
 echo '[ ';
 if ($show_star === 'nolink' || $show_star === 'link in faves') {
@@ -372,13 +372,13 @@ if ($show_star === 'nolink' || $show_star === 'link in faves') {
 
 } else {
 	echo '<a href="' . INTENDED_SERVER_DETS . INTENDED_SUBDIR . '?fave_code=' .
-		$recent_code . '">' . $fave_star_html . '</a>';
+		$sms_code . '">' . $fave_star_html . '</a>';
 }
 
 echo ' ] ' . $faves_links . '<br>' . $recent_links . '<br>';
 if ($pers_cookie[SETTINGS_NAME][PRESENTATION_NAME] === PRESENT_IFRAME) {
-	if ($recent_code !== '') {
-		$iframe_target = COUNTDOWN_URL . $recent_code;
+	if ($sms_code !== '') {
+		$iframe_target = COUNTDOWN_URL . $sms_code;
 
 	} elseif ($fave_code !== '') {
 		$iframe_target = COUNTDOWN_URL . $fave_code;
@@ -386,70 +386,58 @@ if ($pers_cookie[SETTINGS_NAME][PRESENTATION_NAME] === PRESENT_IFRAME) {
 	echo '<iframe width=100% height=100%  src="' . $iframe_target .
 		'"></iframe>';
 
-} elseif ($pers_cookie[SETTINGS_NAME][PRESENTATION_NAME] === PRESENT_V1) {
-	echo '<hr>';
-	require_once('bus-map.php');
-
+} else {
 	$naptan_code = false;
-	if ($recent_code !== '' && isset($bus_code_map[$recent_code])) {
-		$naptan_code = $bus_code_map[$recent_code];
-
-	} elseif ($fave_code !== '' && isset($bus_code_map[$fave_code])) {
-		$naptan_code = $bus_code_map[$fave_code];
-	}
-
+	$response_arr = array();
 	$service_blocked = ERR_NO_ERROR;
-	if ($naptan_code === '') {
-		$service_blocked = ERR_BAD_NAPTAN;
 
-	} else {
-		$response_arr = array();
-		if ($naptan_code !== false && $naptan_code !== '') {
-			require_once('credents.php');
-			$streamContext = stream_context_create(['ssl' =>
-													['cafile' =>
-													 '/etc/apache2/cacert.pem',
-													 'verify_peer' => true,
-													 'verify_peer_name' => true
-													 ]]);
-			$url = 'https://api.tfl.gov.uk/StopPoint/' .
-				$naptan_code . '/arrivals';
-			if ($app_id !== '' && $app_key !== '') {
-				$url .= '?app_id=' . $app_id;
-				$url .= '&app_key=' . $app_key;
-			}
-			$response_json =
-				@file_get_contents($url, false, $streamContext);
-			if ($response_json === false) {
-				$response_arr = array();
-				$service_blocked = ERR_CANT_CONNECT;
+	/* Discover the NAPTAN code either by looking at
+	   bus-stops.csv or using the search?query lookup
+	*/
+	if (USE_BUS_MAP === false
+		&& $pers_cookie[SETTINGS_NAME][PRESENTATION_NAME] === PRESENT_V1) {
+		// slower, more up to date
+		$rv = sendSearchQueryToTFL($sms_code);
+
+		if ($rv['error'] === ERR_NO_ERROR) {
+			$response_arr = $rv['response'];
+			if (array_key_exists('matches', $response_arr)
+				&& array_key_exists(0, $response_arr['matches'])
+				&& array_key_exists('id', $response_arr['matches'][0])) {
+				$naptan_code = $response_arr['matches'][0]['id'];
 
 			} else {
-				$response_arr = json_decode($response_json, true);
-				if ($response_arr === null) {
-					$response_arr = array();
-					$service_blocked = ERR_TFL_NOSVC;
-				}
+				$service_blocked = ERR_BAD_NAPTAN;
 			}
+		}
+
+	} elseif (USE_BUS_MAP === true
+		  && $pers_cookie[SETTINGS_NAME][PRESENTATION_NAME] === PRESENT_V1) {
+		// faster, less bandwidth
+		require_once('bus-map.php');
+
+		$naptan_code = false;
+		if ($sms_code !== '' && isset($bus_code_map[$sms_code])) {
+			$naptan_code = $bus_code_map[$sms_code];
+
+		} elseif ($fave_code !== '' && isset($bus_code_map[$fave_code])) {
+			$naptan_code = $bus_code_map[$fave_code];
 		}
 	}
 
+	/* Ask tfl for the countdown info */
+	if ($naptan_code !== '') {
+		$rv = sendRequestToTFL($naptan_code);
+		$service_blocked = $rv['error'];
+		$response_arr = $rv['response'];
+	}
+
+	/* And relay the response to the user */
+	echo '<hr>';
+
 	if ($service_blocked !== ERR_NO_ERROR) {
-		switch ($service_blocked) {
-		case ERR_TFL_NOSVC:
-			echo 'Sorry! TFL currently blocking'."\n";
-			break;
-		case ERR_CANT_CONNECT:
-			// this also includes our own rate-limiting
-			echo 'Sorry! Failed to connect to TFL\'s API'."\n";
-			break;
-		case ERR_BAD_NAPTAN:
-			// bus map has an sms code pointing to a bad naptan code
-			echo 'Sorry! TFL have that stop no., but don\'t give the naptan code for it'."\n";
-			break;
-		default:
-			echo 'Sorry! Service blocked for unknown reason'."\n";
-		}
+		echo getServiceBlockedMessage($service_blocked);
+
 	} else {
 		if ($response_arr === array ()) {
 			echo '- No arrivals expected -<br />';

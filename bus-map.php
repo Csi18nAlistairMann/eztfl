@@ -1,5 +1,13 @@
 <?php
 /*
+  The service needs to convert bus stop codes (aka sms codes) into naptan
+  codes in order to request the right data: there are two ways to do it.
+  1. Use bus-maps.csv, converted here - it's a straight lookup table.
+   Using it sees a download cost of 1453580 bytes in traffic
+  2. Use the https://api.tfl.gov.uk/StopPoint/Search?query=<bus stop code>
+   Lookup. This took 8620 bytes of traffic per request, and makes things
+   slower by approx 45%.
+
   Date of retrieval 2017-mar-12
 
   01. Download from http://data.tfl.gov.uk/tfl/syndication/feeds/bus-stops.csv

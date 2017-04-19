@@ -54,4 +54,5 @@ define('ERR_TFL_NOSVC', 1);
 define('ERR_CANT_CONNECT', 2);
 define('ERR_BAD_NAPTAN', 3);
 
+define('USE_BUS_MAP', true); // see bus-map.php for info
 ?>
