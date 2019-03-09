@@ -1,16 +1,16 @@
 <?php
 
 define('SERVER_NAME_AND_PORT',
-	   $_SERVER['SERVER_NAME'] . ':'
-	   . $_SERVER['SERVER_PORT']);
+       $_SERVER['SERVER_NAME'] . ':'
+       . $_SERVER['SERVER_PORT']);
 define('SERVER_DETS', (@$_SERVER['HTTPS'] == 'on')
-	   ? 'https://' . SERVER_NAME_AND_PORT
-	   : 'http://' . SERVER_NAME_AND_PORT);
+       ? 'https://' . SERVER_NAME_AND_PORT
+       : 'http://' . SERVER_NAME_AND_PORT);
 
 define('INTENDED_SERVER', 'eztfl.pectw.net');
 define('INTENDED_SUBDIR', '/bus/');
 define('INTENDED_SERVER_DETS',
-	   'http://' . INTENDED_SERVER . ':80');
+       'http://' . INTENDED_SERVER . ':80');
 
 define('PRESENT_IFRAME', 0);
 define('PRESENT_V1', 1);
