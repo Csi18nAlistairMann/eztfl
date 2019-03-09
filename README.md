@@ -2,7 +2,8 @@
 When's the next London bus? The lightest possible client
 
 Visit this page at http://eztfl.pectw.net/bus/
-http://eztfl.pectw.net/bus/53906 for a busy bus stop: Southbound, Park Lane at Marble Arch.
+
+Visit http://eztfl.pectw.net/bus/53906 for a busy bus stop: Southbound, Park Lane at Marble Arch.
 
 London has been spectacularly lucky with public transport in recent years to the point where Transport For London (TfL) have 
 probably THE most effective IT systems I've had the pleasure of working with. 
@@ -13,8 +14,8 @@ the sign I mean. That code can be used to interact with TfL's website instead no
 at https://tfl.gov.uk/travel-information/stations-stops-and-piers/ and takes an astonishing 5.9Mb of bandwidth to do a 
 single lookup. Surely this can be improved on?
 
-TfL allow the public to interact with their back-end at https://api.tfl.gov.uk/, so I decided to write my own client, and this
-repo is the result. A single lookup here takes 5Kb a saving of 99.9%. 
+TfL allow the public to interact with their back-end at https://api.tfl.gov.uk/, so in early 2017 I decided to write my own
+client, and this repo is the result. A single lookup here takes 5Kb, a saving of 99.9%. 
 
 I also experimented with thinking with RESTful design in mind: one can edit the URL to the bus stop one is stood at, changing
 the final few digits saving even the form lookup. 
